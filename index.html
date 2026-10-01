@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GTM Engineering Workbench</title>
+  <meta name="description" content="GTM engineering workbench with outbound systems, ICP scoring, enrichment workflows, and sales operations tools.">
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --panel: #12161c;
+      --panel-2: #171d24;
+      --line: #2a3340;
+      --text: #f6f8fb;
+      --muted: #96a3b4;
+      --green: #79e3a5;
+      --cyan: #72d7ff;
+      --amber: #ffc55f;
+      --coral: #ff8a7a;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 16% 2%, rgba(114, 215, 255, 0.13), transparent 30rem),
+        radial-gradient(circle at 88% 8%, rgba(121, 227, 165, 0.11), transparent 28rem),
+        linear-gradient(180deg, #0d1014, var(--bg));
+      color: var(--text);
+    }
+
+    a { color: inherit; }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(11, 13, 16, 0.82);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 68px;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      color: #071017;
+      font-weight: 900;
+    }
+
+    .links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #d6dee8;
+      font-size: 14px;
+    }
+
+    .links a {
+      text-decoration: none;
+      padding: 8px 9px;
+      border-radius: 8px;
+    }
+
+    .links a:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, 0.78fr);
+      gap: 42px;
+      align-items: center;
+      min-height: calc(100vh - 68px);
+      padding: 54px 0 42px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      color: var(--green);
+      font-weight: 750;
+      font-size: 14px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 18px currentColor;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 850px;
+      font-size: clamp(42px, 7vw, 86px);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 690px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .cta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 8px;
+      background: var(--panel-2);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 750;
+    }
+
+    .btn.primary {
+      border: 0;
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      color: #071017;
+    }
+
+    .preview-window {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(18, 22, 28, 0.84);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+      overflow: hidden;
+    }
+
+    .window-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #344050;
+    }
+
+    .agent-body {
+      padding: 16px;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-item {
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      align-items: center;
+      gap: 11px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0e1319;
+    }
+
+    .num {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(114, 215, 255, 0.12);
+      color: var(--cyan);
+      font-weight: 800;
+    }
+
+    .flow-item strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .flow-item span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: rgba(121, 227, 165, 0.12);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    section {
+      padding: 78px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      max-width: 520px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      min-height: 260px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(18, 22, 28, 0.82);
+    }
+
+    .card h3 {
+      margin: 12px 0 9px;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .card a {
+      margin-top: auto;
+      color: var(--cyan);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .tag {
+      align-self: start;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 6px 9px;
+      color: #dce5ef;
+      font-size: 12px;
+    }
+
+    .proof {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(18, 22, 28, 0.82);
+      overflow: hidden;
+    }
+
+    .panel h3 {
+      margin: 0;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .list {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .list li {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      color: #d8e1eb;
+    }
+
+    .list li:last-child {
+      border-bottom: 0;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .metric {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0e1319;
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 28px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      padding: 38px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .proof,
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .matrix {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><span class="mark">G</span><span>GTM Engineering Workbench</span></div>
+      <nav class="links" aria-label="Primary">
+        <a href="#work">Work samples</a>
+        <a href="#process">Process</a>
+        <a href="#offer">Offer</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <div>
+        <div class="eyebrow">Outbound systems, not just task lists</div>
+        <h1>GTM engineering work samples for modern sales teams.</h1>
+        <p>I build GTM systems that turn ICP research, prospect enrichment, outreach strategy, and reply management into clear workflows a founder or sales team can test quickly.</p>
+        <div class="cta">
+          <a class="btn primary" href="case-studies/gtm-campaign-cockpit.html">View flagship case study</a>
+          <a class="btn" href="#work">Browse samples</a>
+        </div>
+      </div>
+
+      <div class="preview-window" aria-label="GTM workflow preview">
+        <div class="window-top">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span>Campaign cockpit</span>
+        </div>
+        <div class="agent-body">
+          <div class="flow">
+            <div class="flow-item"><div class="num">1</div><div><strong>Read business context</strong><span>Extract ICP, pains, buying triggers</span></div><div class="pill">done</div></div>
+            <div class="flow-item"><div class="num">2</div><div><strong>Score accounts</strong><span>Rank prospects by timing and fit</span></div><div class="pill">live</div></div>
+            <div class="flow-item"><div class="num">3</div><div><strong>Draft outreach</strong><span>Use expert playbook and objection map</span></div><div class="pill">ready</div></div>
+            <div class="flow-item"><div class="num">4</div><div><strong>Handle replies</strong><span>Classify intent and suggest next action</span></div><div class="pill">ready</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="work">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Work Samples</h2>
+          <p>Each sample presents a practical workflow, the business problem it solves, and how it could be operationalized.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <span class="tag">Campaign cockpit</span>
+            <h3>GTM Campaign Cockpit</h3>
+            <p>An interactive campaign workspace that shows prospect list building, outreach drafting, and reply triage.</p>
+            <a href="case-studies/gtm-campaign-cockpit.html">Open case study</a>
+          </article>
+          <article class="card">
+            <span class="tag">ICP scoring</span>
+            <h3>Account Fit Scorer</h3>
+            <p>A scoring model workspace for ranking accounts by segment fit, buying signals, urgency, and channel angle.</p>
+            <a href="case-studies/account-fit-scorer.html">Open case study</a>
+          </article>
+          <article class="card">
+            <span class="tag">Sales workflow</span>
+            <h3>Outbound Sequence Builder</h3>
+            <p>A sequence builder that turns pains, proof points, and objections into a multi-touch email and direct outreach workflow.</p>
+            <a href="case-studies/outbound-sequence-builder.html">Open case study</a>
+          </article>
+          <article class="card">
+            <span class="tag">Enrichment</span>
+            <h3>Prospect Research Console</h3>
+            <p>A research console concept for turning company pages, hiring signals, and role data into personalization inputs.</p>
+            <a href="case-studies/prospect-research-console.html">Open case study</a>
+          </article>
+          <article class="card">
+            <span class="tag">Inbox workflow</span>
+            <h3>Reply Triage Assistant</h3>
+            <p>A reply manager that classifies intent, objections, referral paths, and next actions for outbound conversations.</p>
+            <a href="case-studies/reply-triage-assistant.html">Open case study</a>
+          </article>
+          <article class="card">
+            <span class="tag">Case study system</span>
+            <h3>Case Study Pack</h3>
+            <p>A reusable format for presenting GTM engineering work: workflow, results hypothesis, and client use case.</p>
+            <a href="case-studies/case-study-pack.html">Open case study</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="wrap proof">
+        <div class="section-head" style="display:block;margin-bottom:0">
+          <h2>How I Build</h2>
+          <p style="margin-top:14px">The work is framed like a client engagement: understand the motion, design the workflow, build the system, and explain how it would be operationalized.</p>
+        </div>
+        <div class="panel">
+          <h3>GTM engineering loop</h3>
+          <ul class="list">
+            <li>Map the ICP, buyer pain, timing signals, channels, and conversion goal.</li>
+            <li>Design the workflow across sourcing, enrichment, messaging, CRM, and reply handling.</li>
+            <li>Build the interface or automation logic so stakeholders can test the motion.</li>
+            <li>Package the result as a case study with screenshots, business impact, and next steps.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="offer">
+      <div class="wrap proof">
+        <div class="panel">
+          <h3>Client-ready outcomes</h3>
+          <div class="matrix">
+            <div class="metric"><strong>5</strong><span>client-ready GTM systems</span></div>
+            <div class="metric"><strong>48h</strong><span>typical system sprint</span></div>
+            <div class="metric"><strong>3</strong><span>channels: direct outreach, email, CRM</span></div>
+            <div class="metric"><strong>1</strong><span>clear case study per build</span></div>
+          </div>
+        </div>
+        <div class="section-head" style="display:block;margin-bottom:0">
+          <h2>Service Positioning</h2>
+          <p style="margin-top:14px">GTM Engineer for outbound systems, ICP scoring, prospect research workflows, sales automation, and operational dashboards.</p>
+          <div class="cta">
+            <a class="btn primary" href="README.md">Read repo notes</a>
+            <a class="btn" href="case-studies/gtm-campaign-cockpit.html">Start with flagship sample</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Built as a public workbench for GTM engineering services.</div>
+  </footer>
+</body>
+</html>
